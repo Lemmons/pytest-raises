@@ -5,7 +5,6 @@ import re
 import subprocess
 
 from setuptools import setup
-from setuptools.command.sdist import sdist
 
 PROJECT = 'pytest-raises'
 VERSION_FILE = 'pytest_raises/version.py'

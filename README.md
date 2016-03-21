@@ -1,11 +1,9 @@
 pytest-raises
 ===================================
 
-.. image:: https://travis-ci.org/Authentise/pytest-raises.svg?branch=master
-    :target: https://travis-ci.org/Authentise/pytest-raises
-    :alt: See Build Status on Travis CI
+[![Current Build Status](https://travis-ci.org/Authentise/pytest-raises.svg?branch=master)](https://travis-ci.org/Authentise/pytest-raises)
 
-An implementation of pytest.raises as a pytest.mark fixture
+A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture
 
 Features
 --------
@@ -23,10 +21,11 @@ Requirements
 Installation
 ------------
 
-You can install "pytest-raises" via `pip`_ from `PyPI`_::
+You can install "pytest-raises" via [pip][] from [PyPI][]
 
-    $ pip install pytest-raises
-
+```
+$ pip install pytest-raises
+```
 
 Usage
 -----
@@ -38,7 +37,8 @@ It accepts an `exception` keyword argument, which is the class of error expected
 It will allow tests which raise errors to pass.  The main usage is to assert that an error of a specific type is raise.
 
 A very simple example is:
-```
+
+```python
 import pytest
 
 class SomeException(Exception):
@@ -54,10 +54,12 @@ def test_mark_raises_named():
 @pytest.mark.raises()
 def test_mark_raises_general():
     raise AnotherException('the message')
+
 ```
 
 A more useful example using test parametrization is:
-```
+
+```python
 import pytest
 
 class SomeException(Exception):
@@ -75,30 +77,25 @@ class AnotherException(Exception):
 def test_mark_raises(error):
     if error:
         raise error
+
 ```
 
-All of these tests pass.  These examples are actual tests for this plugin.
+All of these tests pass.  These examples are actual [tests for this plugin][].
 
 License
 -------
 
-Distributed under the terms of the `MIT`_ license, "pytest-raises" is free and open source software
+Distributed under the terms of the [MIT][] license, "pytest-raises" is free and open source software
 
 
 Issues
 ------
 
-If you encounter any problems, please `file an issue`_ along with a detailed description.
+If you encounter any problems, please [file an issue][] along with a detailed description.
 
-.. _`Cookiecutter`: https://github.com/audreyr/cookiecutter
-.. _`@hackebrot`: https://github.com/hackebrot
-.. _`MIT`: http://opensource.org/licenses/MIT
-.. _`BSD-3`: http://opensource.org/licenses/BSD-3-Clause
-.. _`GNU GPL v3.0`: http://www.gnu.org/licenses/gpl-3.0.txt
-.. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
-.. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
-.. _`file an issue`: https://github.com/Lemmons/pytest-raises/issues
-.. _`pytest`: https://github.com/pytest-dev/pytest
-.. _`tox`: https://tox.readthedocs.org/en/latest/
-.. _`pip`: https://pypi.python.org/pypi/pip/
-.. _`PyPI`: https://pypi.python.org/pypi
+[MIT]: http://opensource.org/licenses/MIT
+[file an issue]: https://github.com/Authentise/pytest-raises/issues
+[pytest]: https://github.com/pytest-dev/pytest
+[tests for this plugin]: https://github.com/Authentise/pytest-raises/blob/master/tests/test_raises.py
+[pip]: https://pypi.python.org/pypi/pip/
+[PyPI]: https://pypi.python.org/pypi

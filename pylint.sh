@@ -1,3 +1,8 @@
+PYTHON36=$(python -c 'import sys; print(sys.version_info[0] == 3 and sys.version_info[1] > 5 )')
+if [ "$PYTHON36" == "True" ]; then
+    exit 0
+fi
+
 set -x
 PROJECT=pytest_raises
 if [ -z "$1" ]; then

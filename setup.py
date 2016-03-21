@@ -111,6 +111,7 @@ def main():
             'develop'       : [
                 'coverage>=4.0.3',
                 'pytest-cov>=2.2.0',
+                'pylint==1.5.5',
             ],
         },
         packages            = [

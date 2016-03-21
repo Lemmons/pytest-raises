@@ -7,11 +7,6 @@ pytest-raises
 
 An implementation of pytest.raises as a pytest.mark fixture
 
-----
-
-This `Pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `Cookiecutter-pytest-plugin`_ template.
-
-
 Features
 --------
 

@@ -109,8 +109,6 @@ def main():
         install_requires    = ['pytest>=2.8.1'],
         extras_require      = {
             'develop'       : [
-                'coverage>=4.0.3',
-                'pytest-cov>=2.2.0',
                 'pylint==1.5.5',
             ],
         },

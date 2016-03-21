@@ -102,7 +102,7 @@ def main():
         version             = get_version(),
         description         = "An implementation of pytest.raises as a pytest.mark fixture",
         url                 = "https://github.com/Authentise/pytest-raises",
-        long_description=read('README.rst'),
+        long_description=read('README.md'),
         author              = "Authentise, Inc.",
         author_email        = "engineering@authentise.com",
         py_modules          = ['pytest_raises'],

@@ -21,6 +21,10 @@ def test_pytest_mark_raises(testdir):
 
         def test_exception():
             raise SomeException('the message')
+
+        @pytest.mark.raises(exception = SomeException)
+        def test_mark_no_exception_raised():
+            pass
     """)
 
     result = testdir.runpytest('-v')
@@ -29,6 +33,7 @@ def test_pytest_mark_raises(testdir):
         '*::test_mark_raises_named PASSED',
         '*::test_mark_raises_general PASSED',
         '*::test_exception FAILED',
+        '*::test_mark_no_exception_raised FAILED',
     ])
 
     assert result.ret == 1
@@ -50,6 +55,7 @@ def test_pytest_mark_raises_parametrize(testdir):
             pytest.mark.raises(Exception('the message')),
             pytest.mark.raises(AnotherException('the message'), exception=SomeException),
             SomeException('the message'),
+            pytest.mark.raises(None, exception=SomeException),
         ])
         def test_mark_raises(error):
             if error:
@@ -65,6 +71,7 @@ def test_pytest_mark_raises_parametrize(testdir):
         '*::test_mark_raises*error3* PASSED',
         '*::test_mark_raises*error4* FAILED',
         '*::test_mark_raises*error5* FAILED',
+        '*::test_mark_raises*6None* FAILED',
     ])
 
     assert result.ret == 1

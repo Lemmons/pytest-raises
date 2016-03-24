@@ -21,7 +21,7 @@ def pytest_runtest_call(item):
         else:
             try:
                 raise ExpectedException('Expected exception {}, but it did not raise'.format(exception))
-            except(ExpectedException) as ex:
+            except(ExpectedException):
                 excinfo = sys.exc_info()
                 if traceback:
                     outcome.excinfo = excinfo[:2] + (traceback, )

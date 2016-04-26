@@ -1,39 +1,18 @@
-import codecs
 import contextlib
 import os
 import re
 import subprocess
 
 from setuptools import setup
+from setuptools.command.sdist import sdist
 
+DATA_ROOTS = []
 PROJECT = 'pytest-raises'
-VERSION_FILE = 'pytest_raises/version.py'
-
-def read(fname):
-    file_path = os.path.join(os.path.dirname(__file__), fname)
-    return codecs.open(file_path, encoding='utf-8').read()
+VERSION_FILE = 'pytest_raises/__init__.py'
 
 def _get_output_or_none(args):
-    def _check_output(*popenargs, **kwargs):
-        r"""Run command with arguments and return its output as a byte string.
-        Backported from Python 2.7 as it's implemented as pure python on stdlib.
-        >>> check_output(['/usr/bin/python', '--version'])
-        Python 2.6.2
-        """
-        process = subprocess.Popen(stdout=subprocess.PIPE, *popenargs, **kwargs)
-        output, dummy_err = process.communicate()
-        retcode = process.poll()
-        if retcode:
-            cmd = kwargs.get("args")
-            if cmd is None:
-                cmd = popenargs[0]
-            error = subprocess.CalledProcessError(retcode, cmd)
-            error.output = output
-            raise error
-        return output
-
     try:
-        return _check_output(args).decode('utf-8').strip()
+        return subprocess.check_output(args).decode('utf-8').strip()
     except subprocess.CalledProcessError:
         return None
 
@@ -96,20 +75,36 @@ def get_version():
     git_version = _get_version_from_git()
     return (file_version == 'development' and git_version) or file_version
 
+def get_data_files():
+    data_files = []
+    for data_root in DATA_ROOTS:
+        for root, _, files in os.walk(data_root):
+            data_files.append((os.path.join(PROJECT, root), [os.path.join(root, f) for f in files]))
+    return data_files
+
+class CustomSDistCommand(sdist): # pylint: disable=no-init
+    def run(self):
+        with write_version():
+            sdist.run(self)
+
 def main():
     setup(
         name                = "pytest-raises",
         version             = get_version(),
         description         = "An implementation of pytest.raises as a pytest.mark fixture",
         url                 = "https://github.com/Authentise/pytest-raises",
-        long_description=read('README.md'),
+        long_description    = open('README.md').read(),
         author              = "Authentise, Inc.",
         author_email        = "engineering@authentise.com",
-        py_modules          = ['pytest_raises'],
-        install_requires    = ['pytest>=2.8.1'],
+        cmdclass            = {
+            'sdist'         : CustomSDistCommand,
+        },
+        install_requires    = [
+            'pytest>=2.8.1'
+        ],
         extras_require      = {
             'develop'       : [
-                'pylint==1.5.5',
+                'pylint>=1.5.5',
             ],
         },
         packages            = [

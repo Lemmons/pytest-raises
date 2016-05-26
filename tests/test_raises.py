@@ -34,6 +34,7 @@ def test_pytest_mark_raises(testdir):
         '*::test_mark_raises_general PASSED',
         '*::test_exception FAILED',
         '*::test_mark_no_exception_raised FAILED',
+        "*Expected exception <class 'test_pytest_mark_raises.SomeException'>, but it did not raise",
     ])
 
     assert result.ret == 1
@@ -72,6 +73,31 @@ def test_pytest_mark_raises_parametrize(testdir):
         '*::test_mark_raises*error4* FAILED',
         '*::test_mark_raises*error5* FAILED',
         '*::test_mark_raises*6None* FAILED',
+    ])
+
+    assert result.ret == 1
+
+def test_pytest_mark_raises_pass_through_unexpected_exception(testdir):
+    testdir.makepyfile("""
+        import pytest
+
+        class SomeException(Exception):
+            pass
+
+        class AnotherException(Exception):
+            pass
+
+        @pytest.mark.raises(exception = SomeException)
+        def test_pytest_mark_raises_pass_through_unexpected_exception():
+            raise AnotherException('the message')
+
+    """)
+
+    result = testdir.runpytest('-v')
+
+    result.stdout.fnmatch_lines([
+        '*::test_pytest_mark_raises_pass_through_unexpected_exception FAILED',
+        '*test_pytest_mark_raises_pass_through_unexpected_exception.AnotherException: the message',
     ])
 
     assert result.ret == 1

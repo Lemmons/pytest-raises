@@ -90,7 +90,7 @@ def test_pytest_mark_raises_unexpected_exception(testdir):
         """,
         [
             '*::test_pytest_mark_raises_unexpected_exception FAILED',
-            '*test_pytest_mark_raises_unexpected_exception.AnotherException: the message',
+            '*AnotherException: the message',
         ],
         1
     )

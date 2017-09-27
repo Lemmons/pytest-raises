@@ -73,7 +73,7 @@ def write_version():
 def get_version():
     file_version = _get_version_from_file()
     git_version = _get_version_from_git()
-    return (file_version == 'development' and git_version) or file_version
+    return git_version if (file_version == 'development' and git_version) else file_version
 
 def get_data_files():
     data_files = []
@@ -100,11 +100,11 @@ def main():
             'sdist'         : CustomSDistCommand,
         },
         install_requires    = [
-            'pytest>=2.8.1'
+            'pytest==3.2.2'
         ],
         extras_require      = {
             'develop'       : [
-                'pylint>=1.5.5',
+                'pylint==1.7.2',
             ],
         },
         packages            = [

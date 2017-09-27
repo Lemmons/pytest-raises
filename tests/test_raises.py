@@ -125,7 +125,7 @@ def test_pytest_mark_raises_parametrize(testdir):
             '*::test_mark_raises*error3* PASSED',
             '*::test_mark_raises*error4* FAILED',
             '*::test_mark_raises*error5* FAILED',
-            '*::test_mark_raises*6None* FAILED',
+            '*::test_mark_raises*None* FAILED',
         ],
         1
     )

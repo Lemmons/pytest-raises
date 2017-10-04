@@ -121,13 +121,13 @@ def test_pytest_mark_raises_parametrize(testdir):
                     raise error
         """,
         [
-            '*::test_mark_raises*None* PASSED',
+            '*::test_mark_raises*None0* PASSED',
             '*::test_mark_raises*error1* PASSED',
             '*::test_mark_raises*error2* PASSED',
             '*::test_mark_raises*error3* PASSED',
             '*::test_mark_raises*error4* FAILED',
             '*::test_mark_raises*error5* FAILED',
-            '*::test_mark_raises*None* FAILED',
+            '*::test_mark_raises*None1* FAILED',
             '*::test_mark_raises*error7* PASSED',
             '*::test_mark_raises*error8* FAILED',
             '*ExpectedMessage: "other message" not in "the message"',

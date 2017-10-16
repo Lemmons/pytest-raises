@@ -113,6 +113,8 @@ def test_pytest_mark_raises_parametrize(testdir):
                 pytest.mark.raises(AnotherException('the message'), exception=SomeException),
                 SomeException('the message'),
                 pytest.mark.raises(None, exception=SomeException),
+                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='the message'),
+                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='other message'),
             ])
             def test_mark_raises(error):
                 if error:
@@ -126,6 +128,9 @@ def test_pytest_mark_raises_parametrize(testdir):
             '*::test_mark_raises*error4* FAILED',
             '*::test_mark_raises*error5* FAILED',
             '*::test_mark_raises*None1* FAILED',
+            '*::test_mark_raises*error7* PASSED',
+            '*::test_mark_raises*error8* FAILED',
+            '*ExpectedMessage: "other message" not in "the message"',
         ],
         1
     )

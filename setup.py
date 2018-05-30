@@ -72,6 +72,9 @@ def write_version():
 
 def get_version():
     file_version = _get_version_from_file()
+    if file_version != 'development':
+        return file_version
+
     git_version = _get_version_from_git()
     return git_version if (file_version == 'development' and git_version) else file_version
 

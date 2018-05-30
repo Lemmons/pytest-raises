@@ -1,21 +1,16 @@
 language: python
 python:
-- "2.7"
-- "3.3"
 - "3.4"
 - "3.5"
-- "3.5-dev"
+- "3.6"
+- "3.7-dev"
 - "nightly"
-- "pypy"
 install:
 - pip install pip -U
 - pip install .[develop]
 script:
 - py.test
 - ./pylint.sh
-notifications:
-  slack:
-    secure: DKG0Djbzwa091bbdEkli1xxcJQ6DRTqaF05KpLGSV3RJqvhjFJrhDYWBLtL9hPqIsIy+KN0eWILbdCxMyTETKLuo6c3UGUKyDTBp8mGWqdDjx1x7kIYRkoI94vhGoIVPIHnf/jXrJIUkkifH79CUKqIKaeh/3/DhF9DG5thjFt8UMbaa7jZTvbeS0UBUTR3QuOjfPjuKpetv/rcQa0CpjsDgfjvAlqzrm1u3wivVMUsBsMjasBkG8iz+3Iw3DPsIenkYhzUpQGEXNzxAhpF7DCzXvM4QwRlS1t875PMTJONiCsVE/5hGsqtxmsjrUSuz/A6DN/Onu6j4eIg3CQ3RNTLtRYT8knlHtPWCXv7BM3u9k3EjA4OSrc8OBKGfFnnX4j0WIPApIZIUVvf4/TV8A6qwkRzLEzBb/yPYMT3NjOSLpM5dr7CLewjo8eEj/YcZDGWuEGd2f1Q5rXIVYXbivhao649mbW4/PSD9jd7vo6CGeBasyduUl3DTzV3XH0XQiMzKcYH3OU93o1mWOF2AiLX78MFH7JcYaygAgwzbTjAejNsM2kkllv+yObIQYg9XPMTSvsVgdPzp2lbRbYy8DCM/7dU6Iz9Cn9S+1QvsVg5iWyOf8qeY3py7PlRXnJ+xowOLYEJiZFm96b0+bYyihHI+6qcvFB0VKm5fgX5cF5Y=
 deploy:
   provider: pypi
   user: lemmons

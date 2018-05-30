@@ -72,6 +72,9 @@ def write_version():
 
 def get_version():
     file_version = _get_version_from_file()
+    if file_version != 'development':
+        return file_version
+
     git_version = _get_version_from_git()
     return git_version if (file_version == 'development' and git_version) else file_version
 
@@ -82,7 +85,7 @@ def get_data_files():
             data_files.append((os.path.join(PROJECT, root), [os.path.join(root, f) for f in files]))
     return data_files
 
-class CustomSDistCommand(sdist): # pylint: disable=no-init
+class CustomSDistCommand(sdist): # pylint: disable=no-init, unused-variable
     def run(self):
         with write_version():
             sdist.run(self)

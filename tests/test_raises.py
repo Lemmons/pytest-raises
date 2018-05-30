@@ -18,7 +18,7 @@ def test_pytest_mark_raises_expected_exception(testdir):
                 raise SomeException('the message')
         """,
         [
-            '*::test_mark_raises_expected_exception PASSED',
+            '*::test_mark_raises_expected_exception PASSED*',
         ],
         0
     )
@@ -35,7 +35,7 @@ def test_mark_raises_no_args(testdir):
                 raise AnotherException('the message')
         """,
         [
-            '*::test_mark_raises_no_args PASSED',
+            '*::test_mark_raises_no_args PASSED*',
         ],
         0
     )
@@ -51,7 +51,7 @@ def test_unmarked_test(testdir):
                 raise SomeException('the message')
         """,
         [
-            '*::test_unmarked_test FAILED',
+            '*::test_unmarked_test FAILED*',
         ],
         1
     )
@@ -68,7 +68,7 @@ def test_pytest_mark_raises_no_exception(testdir):
                 pass
         """,
         [
-            '*::test_pytest_mark_raises_no_exception FAILED',
+            '*::test_pytest_mark_raises_no_exception FAILED*',
             "*Expected exception <class '*.SomeException'>, but it did not raise",
         ],
         1
@@ -89,7 +89,7 @@ def test_pytest_mark_raises_unexpected_exception(testdir):
                 raise AnotherException('the message')
         """,
         [
-            '*::test_pytest_mark_raises_unexpected_exception FAILED',
+            '*::test_pytest_mark_raises_unexpected_exception FAILED*',
             '*AnotherException: the message',
         ],
         1
@@ -121,15 +121,15 @@ def test_pytest_mark_raises_parametrize(testdir):
                     raise error
         """,
         [
-            '*::test_mark_raises*None0* PASSED',
-            '*::test_mark_raises*error1* PASSED',
-            '*::test_mark_raises*error2* PASSED',
-            '*::test_mark_raises*error3* PASSED',
-            '*::test_mark_raises*error4* FAILED',
-            '*::test_mark_raises*error5* FAILED',
-            '*::test_mark_raises*None1* FAILED',
-            '*::test_mark_raises*error7* PASSED',
-            '*::test_mark_raises*error8* FAILED',
+            '*::test_mark_raises*None0* PASSED*',
+            '*::test_mark_raises*error1* PASSED*',
+            '*::test_mark_raises*error2* PASSED*',
+            '*::test_mark_raises*error3* PASSED*',
+            '*::test_mark_raises*error4* FAILED*',
+            '*::test_mark_raises*error5* FAILED*',
+            '*::test_mark_raises*None1* FAILED*',
+            '*::test_mark_raises*error7* PASSED*',
+            '*::test_mark_raises*error8* FAILED*',
             '*ExpectedMessage: "other message" not in "the message"',
         ],
         1

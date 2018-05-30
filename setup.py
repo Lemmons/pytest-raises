@@ -85,7 +85,7 @@ def get_data_files():
             data_files.append((os.path.join(PROJECT, root), [os.path.join(root, f) for f in files]))
     return data_files
 
-class CustomSDistCommand(sdist): # pylint: disable=no-init
+class CustomSDistCommand(sdist): # pylint: disable=no-init, unused-variable
     def run(self):
         with write_version():
             sdist.run(self)

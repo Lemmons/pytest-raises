@@ -15,7 +15,14 @@ class ExpectedMessage(Exception):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_call(item):
     outcome = yield
-    raises_marker = item.get_closest_marker('raises')
+
+    # Pytest 3.5+ has a new function for getting a maker from a node
+    # In order to maintain compatability, prefer the newer function
+    # (get_closest_marker) but use the old function (get_marker) if it
+    # doesn't exist.
+    marker_get_func = item.get_closest_marker if hasattr(item, 'get_closest_marker') else item.get_marker
+
+    raises_marker = marker_get_func('raises')
     if raises_marker:
         exception = raises_marker.kwargs.get('exception')
         exception = exception or Exception

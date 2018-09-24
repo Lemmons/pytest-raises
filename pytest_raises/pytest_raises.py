@@ -15,7 +15,7 @@ class ExpectedMessage(Exception):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_call(item):
     outcome = yield
-    raises_marker = item.get_marker('raises')
+    raises_marker = item.get_closest_marker('raises')
     if raises_marker:
         exception = raises_marker.kwargs.get('exception')
         exception = exception or Exception

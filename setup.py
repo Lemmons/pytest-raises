@@ -102,6 +102,8 @@ def main():
         cmdclass            = {
             'sdist'         : CustomSDistCommand,
         },
+        # NOTE: if `install_requires` or `extras_require['develop']` change,
+        #       make sure to update the Dockerfile to install things.
         install_requires    = [
             'pytest>=3.2.2'
         ],

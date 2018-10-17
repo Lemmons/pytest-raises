@@ -5,16 +5,16 @@ import sys
 import pytest
 
 
-class ExpectedException(Exception):
-    pass
+class ExpectedException(Exception):       # pragma: no cover
+    pass                                  # pragma: no cover
 
 
-class ExpectedMessage(Exception):
-    pass
+class ExpectedMessage(Exception):         # pragma: no cover
+    pass                                  # pragma: no cover
 
 
-class PytestRaisesUsageError(Exception):
-    pass
+class PytestRaisesUsageError(Exception):  # pragma: no cover
+    pass                                  # pragma: no cover
 
 
 def _pytest_fail_by_mark_or_set_excinfo(item, outcome, marker_name, ExceptionClass, failure_message, traceback):
@@ -99,7 +99,7 @@ def _pytest_fail_by_mark_or_set_excinfo(item, outcome, marker_name, ExceptionCla
                         # pylint: disable=protected-access
                         outcome._excinfo = excinfo
                     # pylint: disable=bare-except
-                    except:
+                    except:  # pragma: no cover (no tests hit this, kept for safety).
                         pytest.fail(failure_message, pytrace=False)
 
 

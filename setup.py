@@ -110,6 +110,7 @@ def main():
         extras_require      = {
             'develop'       : [
                 'pylint==1.7.2',
+                'pytest-cov'
             ],
         },
         packages            = [

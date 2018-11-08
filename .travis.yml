@@ -7,9 +7,9 @@ python:
 - "nightly"
 install:
 - pip install pip -U
-- pip install .[develop]
+- pip install -e .[develop]
 script:
-- py.test
+- py.test --cov-report term-missing --cov-report xml:coverage.xml --cov
 - ./pylint.sh
 deploy:
   provider: pypi

@@ -1,6 +1,6 @@
 pytest-raises
 ===================================
-[![Build Status](https://travis-ci.com/Lemmons/pytest-raises.svg?branch=master)](https://travis-ci.com/Lemmons/pytest-raises)
+[![Build Status](https://travis-ci.com/Lemmons/pytest-raises.svg?branch=master)](https://travis-ci.com/Lemmons/pytest-raises) [![codecov](https://codecov.io/gh/Lemmons/pytest-raises/branch/master/graph/badge.svg)](https://codecov.io/gh/Lemmons/pytest-raises)
 
 A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture
 

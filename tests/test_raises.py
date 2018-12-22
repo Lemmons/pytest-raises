@@ -236,14 +236,29 @@ def test_pytest_mark_raises_parametrize(testdir):
 
             @pytest.mark.parametrize('error', [
                 None,
-                pytest.mark.raises(SomeException('the message'), exception=SomeException),
-                pytest.mark.raises(AnotherException('the message'), exception=AnotherException),
-                pytest.mark.raises(Exception('the message')),
-                pytest.mark.raises(AnotherException('the message'), exception=SomeException),
+                pytest.param(
+                    SomeException('the message'), marks=pytest.mark.raises(exception=SomeException)
+                ),
+                pytest.param(
+                    AnotherException('the message'), marks=pytest.mark.raises(exception=AnotherException)
+                ),
+                pytest.param(
+                    Exception('the message'), marks=pytest.mark.raises()
+                ),
+                pytest.param(
+                    AnotherException('the message'), marks=pytest.mark.raises(exception=SomeException)
+                ),
                 SomeException('the message'),
-                pytest.mark.raises(None, exception=SomeException),
-                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='the message'),
-                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='other message'),
+                pytest.param(
+                    None, marks=pytest.mark.raises(exception=SomeException)
+                ),
+                pytest.param(
+                    SomeException('the message'), marks=pytest.mark.raises(exception=SomeException, message='the message')
+                ),
+                pytest.param(
+                    SomeException('the message'),
+                    marks=pytest.mark.raises(exception=SomeException, message='other message')
+                ),
             ])
             def test_mark_raises(error):
                 if error:

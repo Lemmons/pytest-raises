@@ -11,7 +11,7 @@ RUN apk add gcc musl-dev
 # dependencies, these must be updated as well!
 RUN mkdir -p /src/pytest-raises
 RUN python3 -m pip install pytest>=3.2.2
-RUN python3 -m pip install pylint==1.7.2
+RUN python3 -m pip install pylint
 RUN python3 -m pip install pytest-cov
 
 # Changes to source should have docker build cached up to here

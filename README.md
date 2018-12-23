@@ -11,6 +11,7 @@ A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture.
 - [Installation](#installation)
 - [Usage](#usage)
     - [Available Markers](#available-markers)
+    - [Limitations on Markers](#limitations-on-markers)
     - [Available Parameters](#available-parameters)
     - [`@pytest.mark.raises` Examples](#pytestmarkraises-examples)
     - [`@pytest.mark.setup_raises` Examples](#pytestmarksetup_raises-examples)
@@ -20,7 +21,8 @@ A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture.
 Features
 --------
 
-Adds functionality for marking tests with a `pytest.mark.raises` fixture, which functions similarly to using `with pytest.raises`
+Adds functionality for marking tests with a `pytest.mark.raises` fixture, which
+functions similarly to using `with pytest.raises`
 
 
 Requirements
@@ -48,7 +50,8 @@ executes is **expected** to raise an error.  This is different from
 `@pytest.mark.xfail()` as it does not mean the test itself might fail, but
 instead that the "pass" for the test is that the code raises an error.
 
-It will allow tests which raise errors to pass.  The main usage is to assert that an error of a specific type is raise.
+It will allow tests which raise errors to pass.  The main usage is to assert
+that an error of a specific type is raise.
 
 If a test is marked with `@pytest.mark.raises` or
 `@pytest.mark.setup_raises` and it does **not** `raise` in the appropriate
@@ -64,6 +67,33 @@ This extension provides two markers for different phases of `pytest`:
       [`with pytest.raises(...)` context manager](https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions).
 - `@pytest.mark.setup_raises`: for marking a function that should `raise`
   during the `pytest_runtest_setup` phase.
+
+### Limitations on Markers
+
+1. Any test function decorated with `@pytest.mark.setup_raises` is assumed
+   to have an empty function body
+
+   ```python
+   @pytest.mark.setup_raises()
+   def test_something():
+       pass
+   ```
+
+   This is because `pytest_runtest_call` may still be executed depending on
+   what raised when.  So any code in the test function body may cause
+   erroneous errors (particularly if you are using fixtures, since the
+   fixture setup may be incomplete).
+
+   See the [`@pytest.mark.setup_raises` Examples](#pytestmarksetup_raises-examples)
+   for more information.
+
+2. Since the function body of anything decorated with
+   `@pytest.mark.setup_raises` is assumed to be empty, test functions that
+   are decorated with both `@pytest.mark.raises`and
+   `@pytest.mark.setup_raises` is **not** supported.
+
+   The implementation details of this limitation are further documented in
+   the `_pytest_raises_validation` function.
 
 ### Available Parameters
 
@@ -201,7 +231,7 @@ In short: the chances are good that you will **not** need
 you need to verify failures during the `pytest_runtest_setup` phase, it is
 an invaluable tool.
 
-**Warning**: notice that when `@pytest.mark.setup_raises` is used, **the
+**Reminder**: notice that when `@pytest.mark.setup_raises` is used, **the
 function body should be exactly `pass`**.  The `pytest_runtest_setup` phase
 has raised, meaning the setup for the test is incomplete.  Anything other
 than an empty test function body of `pass` is **not** supported by this
@@ -210,13 +240,15 @@ extension.
 License
 -------
 
-Distributed under the terms of the [MIT][] license, "pytest-raises" is free and open source software.
+Distributed under the terms of the [MIT][] license, "pytest-raises" is free and
+open source software.
 
 
 Issues
 ------
 
-If you encounter any problems, please [file an issue][] along with a detailed description.
+If you encounter any problems, please [file an issue][] along with a detailed
+description.
 
 [MIT]: http://opensource.org/licenses/MIT
 [file an issue]: https://github.com/Authentise/pytest-raises/issues

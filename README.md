@@ -2,7 +2,20 @@ pytest-raises
 ===================================
 [![Build Status](https://travis-ci.com/Lemmons/pytest-raises.svg?branch=master)](https://travis-ci.com/Lemmons/pytest-raises) [![codecov](https://codecov.io/gh/Lemmons/pytest-raises/branch/master/graph/badge.svg)](https://codecov.io/gh/Lemmons/pytest-raises)
 
-A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture
+A [pytest][] plugin implementation of pytest.raises as a pytest.mark fixture.
+
+**Contents**
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Available Markers](#available-markers)
+    - [Available Parameters](#available-parameters)
+    - [`@pytest.mark.raises` Examples](#pytestmarkraises-examples)
+    - [`@pytest.mark.setup_raises` Examples](#pytestmarksetup_raises-examples)
+- [License](#license)
+- [Issues](#issues)
 
 Features
 --------
@@ -29,11 +42,56 @@ $ pip install pytest-raises
 Usage
 -----
 
-Marking a test with the `@pytest.mark.raises()` decorator will mark that the code the test executes is expected to raise an error.  This is different from `@pytest.mark.xfail()` as it does not mean the test itself might fail, but instead that the "pass" for the test is that the code raises an error.
-
-It accepts an `exception` keyword argument, which is the class of error expected to be raised.
+Marking a test with the `@pytest.mark.raises()` or
+`@pytest.mark.setup_raises` decorator will mark that the code the test
+executes is **expected** to raise an error.  This is different from
+`@pytest.mark.xfail()` as it does not mean the test itself might fail, but
+instead that the "pass" for the test is that the code raises an error.
 
 It will allow tests which raise errors to pass.  The main usage is to assert that an error of a specific type is raise.
+
+If a test is marked with `@pytest.mark.raises` or
+`@pytest.mark.setup_raises` and it does **not** `raise` in the appropriate
+testing phase, the test will be failed.
+
+### Available Markers
+
+This extension provides two markers for different phases of `pytest`:
+
+- `@pytest.mark.raises`: for marking a function that should `raise` during
+  the `pytest_runtest_call` phase.
+    - This decorator can be used in place of the
+      [`with pytest.raises(...)` context manager](https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions).
+- `@pytest.mark.setup_raises`: for marking a function that should `raise`
+  during the `pytest_runtest_setup` phase.
+
+### Available Parameters
+
+Both markers accept the following optional parameters:
+
+- `exception=<Some Exception Class>`: the exact exception **class** that is
+  expected to be raised.
+- `message='some string'`: a verbatim message that is expected to be in the
+  raised exception message.  Note that when `message` is supplied, the check
+  performed is essentially `message in exception_message`.  So any substring
+  can be used, but if the message is "too simple" you may get false
+  positives.
+- `match=r'some regular expression'`: a regular expression to be matched for
+  in the raised exception message.  Note that
+  [`re.match`](https://docs.python.org/3/library/re.html#re.match) is used
+  (rather than `re.search`).  This behavior is identical to the
+  `with pytest.raises` context manager.
+- `match_flags=<regular expression flags>`: any regular expression _flags_
+  desired to be used with the `match` argument.  For example,
+  `match_flags=(re.IGNORECASE | re.DOTALL)`.  No validity checks are
+  performed on the specified flags, but you will receive an error when the
+  match is performed and invalid flags are provided (since the `re` module
+  will not understand the flags).
+
+**Note**: _the `message` and `match` arguments may **not** be supplied at the
+same time.  Only one or the other may be provided._
+
+### `@pytest.mark.raises` Examples
 
 A very simple example is:
 
@@ -46,7 +104,7 @@ class SomeException(Exception):
 class AnotherException(Exception):
     pass
 
-@pytest.mark.raises(exception = SomeException)
+@pytest.mark.raises(exception=SomeException)
 def test_mark_raises_named():
     raise SomeException('the message')
 
@@ -69,22 +127,90 @@ class AnotherException(Exception):
 
 @pytest.mark.parametrize('error', [
     None,
-    pytest.mark.raises(SomeException('the message'), exception=SomeException),
-    pytest.mark.raises(AnotherException('the message'), exception=AnotherException),
-    pytest.mark.raises(Exception('the message')),
+    pytest.param(
+        SomeException('the message'),
+        marks=pytest.mark.raises(exception=SomeException)
+    ),
+    pytest.param(
+        AnotherException('the message'),
+        marks=pytest.mark.raises(exception=AnotherException)
+    ),
+    pytest.param(
+        Exception('the message'),
+        marks=pytest.mark.raises()
+    )
 ])
-def test_mark_raises(error):
+def test_mark_raises_demo(error):
     if error:
         raise error
 
 ```
 
-All of these tests pass.  These examples are actual [tests for this plugin][].
+All of these tests pass.  These examples are actual [tests for this plugin][]
+(exact test case is in `test_pytest_raises_parametrize_demo` test).
+
+### `@pytest.mark.setup_raises` Examples
+
+Usage of the `@pytest.mark.setup_raises` decorator is likely to be uncommon,
+but when it is needed there is no known alternative.  Consider the following
+contrived example, where in a `conftest.py` we have the following check for
+some custom marker we are concerned about:
+
+```python
+# in conftest.py
+def pytest_runtest_setup(item):
+    custom_marker = item.get_closest_marker('custom_marker')
+    if custom_marker:
+        valid = custom_marker.kwargs.get('valid', True)
+        if not valid:
+            raise ValueError('custom_marker.valid was False')
+```
+
+and two tests using this marker
+
+```python
+import pytest
+
+@pytest.mark.custom_marker(valid=False)
+@pytest.mark.setup_raises(
+    exception=ValueError, match=r'.*was False$'
+)
+def test_mark_setup_raises_demo():
+    pass
+
+@pytest.mark.custom_marker(valid=True)
+def test_all_good():
+    pass
+```
+
+This example is in the [tests for this plugin][] in the
+`test_pytest_mark_setup_raises_demo` test case.  This example is awkward, but
+the idea is you can use `@pytest.mark.setup_raises` to catch expected errors
+during the `pytest_runtest_setup` phase.  So when we used `custom_marker`
+with `valid=False`, the `pytest_runtest_setup` will `raise` as expected, but
+not when `valid=True`.
+
+In the real world, the utility of `@pytest.mark.setup_raises` comes in when
+you have potentially less control over the execution of fixtures or perhaps
+want to stress-test custom markers or fixtures.  Consider writing a decorator
+that auto-uses a fixture for a given test function, but deliberately provides
+invalid arguments to the fixture.
+
+In short: the chances are good that you will **not** need
+`@pytest.mark.setup_raises` in the average testing framework.  However, if
+you need to verify failures during the `pytest_runtest_setup` phase, it is
+an invaluable tool.
+
+**Warning**: notice that when `@pytest.mark.setup_raises` is used, **the
+function body should be exactly `pass`**.  The `pytest_runtest_setup` phase
+has raised, meaning the setup for the test is incomplete.  Anything other
+than an empty test function body of `pass` is **not** supported by this
+extension.
 
 License
 -------
 
-Distributed under the terms of the [MIT][] license, "pytest-raises" is free and open source software
+Distributed under the terms of the [MIT][] license, "pytest-raises" is free and open source software.
 
 
 Issues

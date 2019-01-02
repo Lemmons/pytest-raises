@@ -236,14 +236,29 @@ def test_pytest_mark_raises_parametrize(testdir):
 
             @pytest.mark.parametrize('error', [
                 None,
-                pytest.mark.raises(SomeException('the message'), exception=SomeException),
-                pytest.mark.raises(AnotherException('the message'), exception=AnotherException),
-                pytest.mark.raises(Exception('the message')),
-                pytest.mark.raises(AnotherException('the message'), exception=SomeException),
+                pytest.param(
+                    SomeException('the message'), marks=pytest.mark.raises(exception=SomeException)
+                ),
+                pytest.param(
+                    AnotherException('the message'), marks=pytest.mark.raises(exception=AnotherException)
+                ),
+                pytest.param(
+                    Exception('the message'), marks=pytest.mark.raises()
+                ),
+                pytest.param(
+                    AnotherException('the message'), marks=pytest.mark.raises(exception=SomeException)
+                ),
                 SomeException('the message'),
-                pytest.mark.raises(None, exception=SomeException),
-                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='the message'),
-                pytest.mark.raises(SomeException('the message'), exception=SomeException, message='other message'),
+                pytest.param(
+                    None, marks=pytest.mark.raises(exception=SomeException)
+                ),
+                pytest.param(
+                    SomeException('the message'), marks=pytest.mark.raises(exception=SomeException, message='the message')
+                ),
+                pytest.param(
+                    SomeException('the message'),
+                    marks=pytest.mark.raises(exception=SomeException, message='other message')
+                ),
             ])
             def test_mark_raises(error):
                 if error:
@@ -262,6 +277,44 @@ def test_pytest_mark_raises_parametrize(testdir):
             '*ExpectedMessage: "other message" not in "the message"',
         ],
         1
+    )
+
+def test_pytest_raises_parametrize_demo(testdir):
+    _run_tests_test(testdir, """
+        import pytest
+
+        class SomeException(Exception):
+            pass
+
+        class AnotherException(Exception):
+            pass
+
+        @pytest.mark.parametrize('error', [
+            None,
+            pytest.param(
+                SomeException('the message'),
+                marks=pytest.mark.raises(exception=SomeException)
+            ),
+            pytest.param(
+                AnotherException('the message'),
+                marks=pytest.mark.raises(exception=AnotherException)
+            ),
+            pytest.param(
+                Exception('the message'),
+                marks=pytest.mark.raises()
+            )
+        ])
+        def test_mark_raises_demo(error):
+            if error:
+                raise error
+        """,
+        [
+            '*::test_mark_raises_demo*None* PASSED*',
+            '*::test_mark_raises_demo*error1* PASSED*',
+            '*::test_mark_raises_demo*error2* PASSED*',
+            '*::test_mark_raises_demo*error3* PASSED*'
+        ],
+        0
     )
 
 ####################################################################################################
@@ -529,4 +582,35 @@ def test_pytest_mark_setup_raises_message_and_match_fails(testdir):
             'PytestRaisesUsageError: @pytest.mark.setup_raises: only `message="some message"` *OR* `match="stuff"` allowed, not both.'
         ],
         1
+    )
+
+
+def test_pytest_mark_setup_raises_demo(testdir):
+    _run_tests_test(testdir, """
+            import pytest
+
+            @pytest.mark.custom_marker(valid=False)
+            @pytest.mark.setup_raises(
+                exception=ValueError, match=r'.*was False$'
+            )
+            def test_mark_setup_raises_demo():
+                pass
+
+            @pytest.mark.custom_marker(valid=True)
+            def test_all_good():
+                pass
+        """,
+        [
+            '*::test_mark_setup_raises_demo PASSED*',
+            '*::test_all_good PASSED*'
+        ],
+        0,
+        conftest="""
+            def pytest_runtest_setup(item):
+                custom_marker = item.get_closest_marker('custom_marker')
+                if custom_marker:
+                    valid = custom_marker.kwargs.get('valid', True)
+                    if not valid:
+                        raise ValueError('custom_marker.valid was False')
+        """
     )

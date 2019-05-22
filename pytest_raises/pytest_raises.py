@@ -288,3 +288,20 @@ def pytest_runtest_call(item):
     __tracebackhide__ = True
     outcome = yield
     _pytest_raises_validation(item, outcome, 'raises')
+
+
+# NOTE: this gets evaluated by consuming packages only.
+def pytest_configure(config):  # pragma: no cover
+    """
+    Register the markers with pytest.
+
+    See: https://docs.pytest.org/en/latest/writing_plugins.html#registering-markers
+    """
+    config.addinivalue_line(
+        'markers',
+        'setup_raises: expect pytest_runtest_setup phase to raise.'
+    )
+    config.addinivalue_line(
+        'markers',
+        'raises: expect pytest_runtest_call phase to raise.'
+    )

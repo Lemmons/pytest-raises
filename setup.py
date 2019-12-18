@@ -97,7 +97,7 @@ def main():
         description         = "An implementation of pytest.raises as a pytest.mark fixture",
         url                 = "https://github.com/Authentise/pytest-raises",
         long_description    = open('README.md').read(),
-        long_description_content_type='text/markdown', 
+        long_description_content_type='text/markdown',
         author              = "Authentise, Inc.",
         author_email        = "engineering@authentise.com",
         cmdclass            = {

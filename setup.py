@@ -92,28 +92,29 @@ class CustomSDistCommand(sdist): # pylint: disable=no-init, unused-variable
 
 def main():
     setup(
-        name                = "pytest-raises",
-        version             = get_version(),
-        description         = "An implementation of pytest.raises as a pytest.mark fixture",
-        url                 = "https://github.com/Authentise/pytest-raises",
-        long_description    = open('README.md').read(),
-        author              = "Authentise, Inc.",
-        author_email        = "engineering@authentise.com",
-        cmdclass            = {
-            'sdist'         : CustomSDistCommand,
+        name="pytest-raises",
+        version=get_version(),
+        description="An implementation of pytest.raises as a pytest.mark fixture",
+        url="https://github.com/Authentise/pytest-raises",
+        long_description=open('README.md').read(),
+        long_description_content_type='text/markdown',
+        author="Authentise, Inc.",
+        author_email="engineering@authentise.com",
+        cmdclass={
+            'sdist': CustomSDistCommand,
         },
         # NOTE: if `install_requires` or `extras_require['develop']` change,
         #       make sure to update the Dockerfile to install things.
-        install_requires    = [
+        install_requires=[
             'pytest>=3.2.2'
         ],
-        extras_require      = {
-            'develop'       : [
+        extras_require={
+            'develop': [
                 'pylint',
                 'pytest-cov'
             ],
         },
-        packages            = [
+        packages=[
             "pytest_raises",
         ],
         entry_points={
@@ -121,7 +122,7 @@ def main():
                 'raises = pytest_raises.pytest_raises',
             ],
         },
-        include_package_data= True,
+        include_package_data=True
     )
 
 if __name__ == "__main__":

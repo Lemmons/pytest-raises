@@ -1,0 +1,36 @@
+name: Package
+
+# Trigger: build distribution on pull requests and tags, only deploy on tags.
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    tags: '*'
+
+jobs:
+  dist:
+    name: Build Packaging
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+      - name: Setup Packaging Utilities
+        run: |
+          pip install -U pip setuptools wheel
+          pip install readme_renderer twine
+      - name: Build
+        run: |
+          # Build source distribution.
+          python setup.py sdist
+
+          # Build wheel distribution.
+          # NOTE: if/when py2 abandoned, remove --universal.
+          python setup.py bdist_wheel --universal
+
+          twine check dist/*
+      - name: Deploy to PyPI
+        run: |
+          ls -alR dist

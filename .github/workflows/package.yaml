@@ -4,13 +4,14 @@ name: Package
 on:
   pull_request:
     branches:
-      - master
+      - '*'
   push:
     tags: '*'
 
 jobs:
   dist:
     name: Build Packaging
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python

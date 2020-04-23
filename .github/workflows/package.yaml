@@ -34,3 +34,4 @@ jobs:
       - name: Deploy to PyPI
         run: |
           ls -alR dist
+          echo hello world

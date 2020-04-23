@@ -56,6 +56,7 @@ def _get_version_from_file():
 
 @contextlib.contextmanager
 def write_version():
+    # pylint: disable=fixme
     # TODO: don't use `git` on GitHub Actions, tags are not pulled
     #       with history included (`git describe` will fail).
     # version = _get_version_from_git()

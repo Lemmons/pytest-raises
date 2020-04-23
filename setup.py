@@ -56,22 +56,19 @@ def _get_version_from_file():
 
 @contextlib.contextmanager
 def write_version():
-    # pylint: disable=fixme
-    # TODO: don't use `git` on GitHub Actions, tags are not pulled
-    #       with history included (`git describe` will fail).
-    # version = _get_version_from_git()
-    # if version:
-    #     with open(VERSION_FILE, 'r') as version_file:
-    #         old_contents = version_file.read()
-    #     with open(VERSION_FILE, 'w') as version_file:
-    #         new_contents = '__version__ = "{}"\n'.format(version)
-    #         version_file.write(new_contents)
-    # print("Wrote {} with {}".format(VERSION_FILE, new_contents))
+    version = _get_version_from_git()
+    if version:
+        with open(VERSION_FILE, 'r') as version_file:
+            old_contents = version_file.read()
+        with open(VERSION_FILE, 'w') as version_file:
+            new_contents = '__version__ = "{}"\n'.format(version)
+            version_file.write(new_contents)
+    print("Wrote {} with {}".format(VERSION_FILE, new_contents))
     yield
-    # if version:
-    #     with open(VERSION_FILE, 'w') as version_file:
-    #         version_file.write(old_contents)
-    #         print("Reverted {} to old contents".format(VERSION_FILE))
+    if version:
+        with open(VERSION_FILE, 'w') as version_file:
+            version_file.write(old_contents)
+            print("Reverted {} to old contents".format(VERSION_FILE))
 
 def get_version():
     file_version = _get_version_from_file()

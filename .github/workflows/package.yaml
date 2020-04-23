@@ -32,7 +32,8 @@ jobs:
           python setup.py bdist_wheel --universal
 
           twine check dist/*
-      - name: Deploy to PyPI
+      - name: Deploy to PyPI on Tag
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         run: |
           ls -alR dist
           echo hello world

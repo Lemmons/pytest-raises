@@ -3,14 +3,14 @@ name: Package
 # Trigger: build distribution on pull requests and tags, only deploy on tags.
 on:
   pull_request:
-    branches:
-      - '*'
+    branches: '*'
   push:
     tags: '*'
 
 jobs:
   dist:
-    name: Build Packaging
+    name: Build
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Python
@@ -21,7 +21,7 @@ jobs:
         run: |
           pip install -U pip setuptools wheel
           pip install readme_renderer twine
-      - name: Build
+      - name: Package
         run: |
           # Build source distribution.
           python setup.py sdist
@@ -31,6 +31,11 @@ jobs:
           python setup.py bdist_wheel --universal
 
           twine check dist/*
-      - name: Deploy to PyPI
+      - name: Deploy to PyPI on Tag
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
         run: |
-          ls -alR dist
+          # Upload to PyPI!
+          twine upload \
+            --username "__token__" \
+            --password "${{ secrets.pypi_password }}" \
+            dist/*

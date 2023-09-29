@@ -69,15 +69,14 @@ def _pytest_fail_by_mark_or_set_excinfo(item, outcome, marker_name, ExceptionCla
     """
     # pylint: disable=unused-variable
     __tracebackhide__ = True
+    failure_message = '{}: {}'.format(ExceptionClass.__name__, failure_message)
     if marker_name == 'setup_raises':
         # In the later stage when `fail` is called, it is nice to "simulate" an
         # exception by putting the expected exception class's name as a prefix.
-        failure_message = '{}: {}'.format(ExceptionClass.__name__, failure_message)
         item.add_marker(pytest.mark.setup_raises_expected_exc_or_message_not_found(failure_message))
     else:  # marker_name == 'raises'
         # Avoid "while handling exception another exception occurred" scenarios.
         if issubclass(ExceptionClass, PytestRaisesUsageError):
-            failure_message = '{}: {}'.format(ExceptionClass.__name__, failure_message)
             pytest.fail(failure_message, pytrace=False)
         else:
             try:
